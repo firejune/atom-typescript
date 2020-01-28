@@ -38,8 +38,24 @@ Add the following to your init script (Edit → Init Script... or File → Init
 Script... menu option -- the particular location depends on the platform for
 some reason).
 
+On newer Atom versions (when the init script is called `init.js`):
+
+```js
+{
+  // CHANGE THE PACKAGE NAME IN THE NEXT LINE
+  const grammarPackageImUsing = "typescript-grammar-you-want-to-use";
+  atom.packages.onDidTriggerActivationHook(
+    `${grammarPackageImUsing}:grammar-used`,
+    () =>
+      atom.packages.triggerActivationHook("language-typescript:grammar-used")
+  );
+}
+```
+
+On older Atom versions (when the init script is called `init.coffee`):
+
 ```coffee
-#CHANGE THE PACKAGE NAME IN THE NEXT LINE
+# CHANGE THE PACKAGE NAME IN THE NEXT LINE
 do (grammarPackageImUsing = "typescript-grammar-you-want-to-use") ->
   atom.packages.onDidTriggerActivationHook "#{grammarPackageImUsing}:grammar-used", ->
     atom.packages.triggerActivationHook 'language-typescript:grammar-used'
@@ -96,6 +112,18 @@ with `typescript:restart-all-servers` command.
 
 If that doesn't help, resetting the editor using `Window: Reload` command
 should work.
+
+## Rename-refactor updates files in `node_modules`?!
+
+This by design, since TypeScript doesn't really assign any special meaning to `node_modules`. You can explicitly forbid this by excluding `node_modules` from the project, f.ex. by adding `node_modules` to `exclude` option in `tsconfig.json`:
+
+```json
+{
+  "exclude": [
+    "node_modules"
+  ]
+}
+```
 
 ## Failed to Update
 
